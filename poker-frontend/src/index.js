@@ -2,38 +2,44 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-// This is required for bootstrap to work
-import 'bootstrap/dist/css/bootstrap.css';
 
 import registerServiceWorker from './registerServiceWorker';
-import {Provider} from "react-redux";
-import {ConnectedRouter} from "react-router-redux";
-
+import { Provider } from "react-redux";
+import { ConnectedRouter } from "react-router-redux";
+import { PersistGate } from 'redux-persist/es/integration/react'
 import configureStore from "./store/configureStore";
-import {history} from "./store/configureStore"
-import App from "./App";
-import {Route} from "react-router-dom";
+import { history } from "./store/configureStore"
 
-const store = configureStore();
+import { Route } from 'react-router-dom';
 
-let render = App => (
+import App from "./components/App";
+
+
+const onBeforeLift = () => {
+    // take some action before the gate lifts
+}
+
+const { persistor, store } = configureStore();
+
+let render = (App) => (
     ReactDOM.render(
-        //what is the provider tag, the ConnectedRouter tag, and the route tag?
         <Provider store={store}>
-            <ConnectedRouter history={history}>
-                <Route path="/" component={App}/>
-            </ConnectedRouter>
+            <PersistGate persistor={persistor}
+                loading={null}
+                onBeforeLift={onBeforeLift}>
+                <ConnectedRouter history={history} >
+                    <Route path="/" component={App} />
+                </ ConnectedRouter>
+            </PersistGate>
         </Provider>,
-          document.getElementById('root'))
+        document.getElementById('root'))
 );
-
-// We first render the application
 
 render(App);
 
 // If webpacks HMR detects a change in the App, we reload it
 if (module.hot) {
-    module.hot.accept('./App', () => {
+    module.hot.accept('./components/App', () => {
         render(App)
     })
 }

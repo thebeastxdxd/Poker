@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^3.1.0",
     "bootstrap": "^4.0.0-alpha.6",
     "history": "^4.6.3",
     "lodash": "^4.17.4",
@@ -12,9 +13,12 @@
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.0",
     "react-addons-transition-group": "^15.6.0",
+    "react-app-rewired": "^1.4.0",
+    "react-bootstrap": "^0.31.5",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",
     "react-router": "^4.1.2",
+    "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.1.2",
     "react-router-redux": "^5.0.0-alpha.6",
     "react-scripts": "1.0.11",
@@ -23,6 +27,7 @@
     "reactstrap": "^4.8.0",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
+    "redux-persist": "^5.4.0",
     "stylus": "^0.54.5",
     "stylus-chokidar": "0.0.3",
     "uuid": "^3.1.0"
@@ -30,13 +35,14 @@
   "scripts": {
     "build-css": "stylus-chokidar src/ --include-css",
     "watch-css": "npm run build-css && stylus-chokidar -w src/ --include-css",
-    "start-js": "react-scripts start",
+    "start-js": "react-app-rewired start",
     "start": "npm-run-all -p watch-css start-js",
-    "build": "npm run build-css && react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "build": "npm run build-css && react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "babel-plugin-import": "^1.6.3",
     "jest": "^20.0.4",
     "redux-logger": "^3.0.6"
   }

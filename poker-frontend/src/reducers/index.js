@@ -1,6 +1,21 @@
+import * as actionTypes from "../constants/actionTypes";
 
-const rootReducer = (state ={}, action) => {
-    return state
+
+const initNavbar = {
+    selected:'Home'
 }
 
-export default rootReducer
+const rootReducer = (state = { NavBar:initNavbar}, action) => {
+    switch(action.type)
+    {
+        case actionTypes.ON_NAV_BAR_CLICK:
+            return {...state, NavBar:{selected:action.selected}}; 
+
+        default:
+            return state;
+
+    }
+
+}
+
+export default {rootReducer};
