@@ -18,4 +18,7 @@ const rootReducer = (state = { NavBar:initNavbar}, action) => {
 
 }
 
-export default {rootReducer};
+const anotherReducer = (state = {}, action) =>{
+    return state;
+}
+export default {rootReducer, anotherReducer};

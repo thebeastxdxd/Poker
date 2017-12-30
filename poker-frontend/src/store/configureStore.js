@@ -5,7 +5,7 @@ import createHistory from 'history/createBrowserHistory'
 import {composeWithDevTools} from "redux-devtools-extension";
 import {routerMiddleware} from "react-router-redux";
 import {persistStore, persistCombineReducers } from 'redux-persist';
-import storage from 'redux-persist/es/storage';
+import storage from 'redux-persist/lib/storage';
 
 
 
@@ -14,21 +14,23 @@ export const history = createHistory();
 const config = {
     key: 'root',
     storage,
+    
 }
-
+config.debug = true;
 const reducer = persistCombineReducers(config, rootReducer);
 
 const configureStore = () => {
-    const store = createStore(
+    let store = createStore(
         reducer,
+        undefined,
         composeWithDevTools(applyMiddleware(logger, 
         routerMiddleware(history)))
     );
-    let persistor = persistStore(store, null, store.getState());
+    let persistor = persistStore(store);
     // We can hook to webpack's API to replace the root reducer of the store, which will propagate back all the actions.
     if (module.hot) {
         module.hot.accept("../reducers/index", () =>
-            store.replaceReducer(rootReducer)
+            store.replaceReducer(rootReducer.rootReducer)
         )
     }
 

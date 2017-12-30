@@ -12,7 +12,6 @@ import Home from './Home';
 
 let NavBar = ({ selectedKey, onClick }) => (
     <div>
-        {console.log(selectedKey)}
         <Menu
             onClick={onClick}
             selectedKeys={[selectedKey]}
@@ -52,7 +51,7 @@ let NavBar = ({ selectedKey, onClick }) => (
 
 const mapStateToProps = (state) => {
     return {
-        selectedKey: state.NavBar.selected
+        selectedKey: state.rootReducer.NavBar.selected
     }
 }
 
