@@ -10,7 +10,8 @@ const rootReducer = (state = { NavBar:initNavbar}, action) => {
     {
         case actionTypes.ON_NAV_BAR_CLICK:
             return {...state, NavBar:{selected:action.selected}}; 
-
+        case actionTypes.LOG_IN_TO_SIGN_UP:
+            return {...state, NavBar:{selected:action.selected}};
         default:
             return state;
 

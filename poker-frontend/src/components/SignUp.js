@@ -1,139 +1,66 @@
 import React from 'react';
-import { Form, Input, Tooltip, Icon, Button,  } from 'antd';
-const FormItem = Form.Item;
+import { Steps, Button, message } from 'antd';
+import SignUpForm from './SignUpForm';
+import '../Steps.css'
 
-class signUpForm extends React.Component {
-  state = {
-    confirmDirty: false,
-  };
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-  }
-  handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  }
-  checkPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
-    } 
-    else {
-      callback();
-    }
-  }
-  checkConfirm = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  }
+const Step = Steps.Step;
 
-  
+const steps = [{
+  title: 'SignUp',
+  content: <SignUpForm />,
+}, {
+  title: 'Billing info',
+  content: 'Enter your Billing info',
+}, {
+  title: 'Avtar Picture',
+  content: 'Upload Avatar Pic',
+}];
 
-  render() {
-    const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
-
-    const formItemLayout = {
-        labelCol: {
-          xs: { span: 4 },
-          sm: { span: 8 },
-        },
-        wrapperCol: {
-          xs: { span: 4 },
-          sm: { span: 8 },
-        },
-      };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 4,
-          offset: 0,
-        },
-        sm: {
-          span: 8,
-          offset: 8,
-        },
-      },
+class SignUp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      current: 0,
     };
-
-
+  }
+  next() {
+    const current = this.state.current + 1;
+    this.setState({ current });
+  }
+  prev() {
+    const current = this.state.current - 1;
+    this.setState({ current });
+  }
+  render() {
+    const { current } = this.state;
     return (
-      <Form layout="horizontal" onSubmit={this.handleSubmit} >
-        <FormItem
-          {...formItemLayout}
-          label="E-mail"
-        >
-          {getFieldDecorator('email', {
-            rules: [{
-              type: 'email', message: 'The input is not valid E-mail!',
-            }, {
-              required: true, message: 'Please input your E-mail!',
-            }],
-          })(
-            <Input />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label={(
-            <span>
-              userName&nbsp;
-              <Tooltip title="What name do you want people to see?">
-                <Icon type="question-circle-o" />
-              </Tooltip>
-            </span>
-          )}
-        >
-          {getFieldDecorator('userName', {
-            rules: [{ required: true, message: 'Please input your userName!', whitespace: true }],
-          })(
-            <Input />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Password"
-        >
-          {getFieldDecorator('password', {
-            rules: [{
-              required: true, message: 'Please input your password!',
-            }, {
-              validator: this.checkConfirm,
-            }],
-          })(
-            <Input type="password" />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="Confirm Password"
-        >
-          {getFieldDecorator('confirm', {
-            rules: [{
-              required: true, message: 'Please confirm your password!',
-            }, {
-              validator: this.checkPassword,
-            }],
-          })(
-            <Input type="password" onBlur={this.handleConfirmBlur} />
-          )}
-        </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">Register</Button>
-        </FormItem>
-      </Form>
+      <div>
+        <Steps current={current}>
+          {steps.map(item => <Step key={item.title} title={item.title} />)}
+        </Steps>
+        <div className="steps-content">{steps[this.state.current].content}</div>
+        <div className="steps-action" style={{ textAlign: 'center'}} >
+          {
+            this.state.current < steps.length - 1
+            &&
+            <Button type="primary"   onClick={() => this.next()}>Next</Button>
+          }
+          {
+            this.state.current === steps.length - 1
+            &&
+            <Button type="primary"   onClick={() => message.success('Processing complete!')}>Done</Button>
+          }
+          {
+            this.state.current > 0
+            &&
+            <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
+              Previous
+            </Button>
+          }
+        </div>
+      </div>
     );
   }
 }
 
-const WrappedSignUpForm = Form.create()(signUpForm);
-
-export default WrappedSignUpForm;
+export default SignUp;

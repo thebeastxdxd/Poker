@@ -5,12 +5,16 @@ import './index.css';
 
 import registerServiceWorker from './registerServiceWorker';
 import { Provider } from "react-redux";
-import { ConnectedRouter } from "react-router-redux";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import configureStore from "./store/configureStore";
 import { history } from "./store/configureStore"
 
-import { Route } from 'react-router-dom';
+
+
+import LogIn from './components/LogIn';
+import SignUp from './components/SignUp'
+import Home from './components/Home';
 
 import App from "./components/App";
 
@@ -27,9 +31,10 @@ let render = (App) => (
             <PersistGate persistor={persistor}
                 loading={null}
                 onBeforeLift={onBeforeLift}>
-                <ConnectedRouter history={history} >
-                    <Route path="/" component={App} />
-                </ ConnectedRouter>
+                <Router history={history} >
+                    <Route path='/' component={App} />
+                 
+                </ Router>
             </PersistGate>
         </Provider>,
         document.getElementById('root'))
