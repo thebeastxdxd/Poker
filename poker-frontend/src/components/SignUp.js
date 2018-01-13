@@ -34,7 +34,7 @@ class SignUp extends React.Component {
   render() {
     const { current } = this.state;
     return (
-      <div>
+      <div style={{margin: '5px 10px 0px 10px'}}>
         <Steps current={current}>
           {steps.map(item => <Step key={item.title} title={item.title} />)}
         </Steps>
@@ -43,12 +43,12 @@ class SignUp extends React.Component {
           {
             this.state.current < steps.length - 1
             &&
-            <Button type="primary"   onClick={() => this.next()}>Next</Button>
+            <Button type="primary"  htmlType="submit" form={steps[this.state.current].title}  onClick={() =>{}}>Next</Button>
           }
           {
             this.state.current === steps.length - 1
             &&
-            <Button type="primary"   onClick={() => message.success('Processing complete!')}>Done</Button>
+            <Button type="primary"  htmlType="submit" form={steps[this.state.current].title}  onClick={() => message.success('Processing complete!')}>Done</Button>
           }
           {
             this.state.current > 0

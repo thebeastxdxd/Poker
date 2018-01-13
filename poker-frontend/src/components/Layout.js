@@ -1,47 +1,49 @@
-import React, { Children } from 'react';
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-import { Route, Switch } from 'react-router-dom';
+import React from 'react';
+import { Layout, Menu, Icon } from 'antd';
+import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { onNavBarClick } from '../actions/index';
-import { NavLink } from 'react-router-dom'
+import { changeNavSelected } from '../actions/index';
+import { NavLink, withRouter } from 'react-router-dom'
 import LogIn from './LogIn';
 import SignUp from './SignUp'
 import Home from './Home';
-const { Header, Content, Footer, Sider } = Layout;
+import '../App.css'
+const { Header, Content, Footer } = Layout;
 
 
 
 let siteLayout = ({ selectedKey, onClick }) => (
     <Layout>
-        <Header style={{ position: 'fixed', width: '100%'  }}>
+        <Header style={{ position: 'fixed', width: '100%', padding: '0px' }}>
             <div className="logo" />
             <Menu
-                onClick={onClick}
+                onClick={(e) => onClick(e.key)}
                 theme="dark"
                 selectedKeys={[selectedKey]}
                 mode="horizontal"
-                style={{ lineHeight: '64px' }}
+                style={{ lineHeight: '70px' }}
             >
-                <Menu.Item key="Home" >
+                <Menu.Item key="/Home" >
                 <Icon type="home" /> Home
                 <NavLink to="Home" />
                 </Menu.Item>
-                <Menu.Item key="LogIn">
+                <Menu.Item key="/LogIn">
                 <Icon type="unlock" />Log In
                     <NavLink to="LogIn" />
                 </Menu.Item>
 
-                <Menu.Item key="SignUp">
+                <Menu.Item key="/SignUp">
                 <Icon type="user-add" />Sign Up
                     <NavLink to="SignUp" />
                 </Menu.Item>
             </Menu>
         </Header>
 
-        <Content style={{ height:"85vh", padding: '0 50px', marginTop: 64 }}>
+        <Content style={{ minHeight:"85vh", marginTop: '70px' }}>
                 <Route path="/SignUp" component={SignUp} />
                 <Route path="/LogIn" component={LogIn} />
-                <Route path="/Home" component={Home} />
+                <Route exact path="/Home" component={Home} />
+                <Route exact path="/" component={Home} />
 
         </Content>
 
@@ -54,7 +56,7 @@ let siteLayout = ({ selectedKey, onClick }) => (
 
 const mapStateToProps = (state) => {
     return {
-        selectedKey: state.rootReducer.NavBar.selected
+        selectedKey: state.rootReducer.navBar.selected
     }
 }
 
@@ -62,7 +64,7 @@ const mapStateToProps = (state) => {
 
 siteLayout = connect(
     mapStateToProps,
-    { onClick: onNavBarClick }
+    { onClick: changeNavSelected }
 )(siteLayout);
 
 

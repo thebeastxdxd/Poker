@@ -1,5 +1,12 @@
 
-
+.logo {
+  background-image: url('./icon.svg');
+  width: 60px;
+  height: 100%;
+  margin: 5px 10px 0px 0;
+  float: left;
+  background-size: cover;
+}
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;

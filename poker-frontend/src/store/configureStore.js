@@ -6,7 +6,8 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import {routerMiddleware} from "react-router-redux";
 import {persistStore, persistCombineReducers } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-
+import thunk from 'redux-thunk';
+import { pokerMiddleware } from "../pokerMiddleware";
 
 
 export const history = createHistory();
@@ -23,7 +24,7 @@ const configureStore = () => {
     let store = createStore(
         reducer,
         undefined,
-        composeWithDevTools(applyMiddleware(logger, 
+        composeWithDevTools(applyMiddleware(thunk,pokerMiddleware, logger, 
         routerMiddleware(history)))
     );
     let persistor = persistStore(store);

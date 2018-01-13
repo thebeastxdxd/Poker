@@ -3,25 +3,25 @@ import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import '../Form.css';
 import {connect} from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { Route, Switch } from 'react-router-dom';
-import SignUp from './SignUp';
-import {loginToSignup} from '../actions/index';
+import {login, loginToSignup} from '../actions/index';
+import PropTypes from 'prop-types';
 
 const FormItem = Form.Item;
 
-class NormalLoginForm extends React.Component {
-    constructor({onClick}) {
-        super()
-        this.onClick = onClick;
+class LoginForm extends React.Component {
+    constructor(props) {
+        super(props)
+        this.onClick = props.onClick;
     }
     
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                this.props.login(values).then(() => this.props.history.push('/'));
             }
         });
+        
     }
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -72,20 +72,19 @@ class NormalLoginForm extends React.Component {
                         })(
                             <Checkbox>Remember me</Checkbox>
                             )}
-                        <Button type="primary" htmlType="submit" className="login-form-button" {...tailFormItemLayout}>
+                        <Button type="primary" htmlType="submit" className="login-form-button">
                             Log in
                         </Button>
                         Or <NavLink to="/SignUp" onClick={this.onClick}>Sign Up</NavLink>
                     </FormItem>
                 </Form> 
-
         );
     }
 }
 
-const WrappedNormalLoginForm = connect(null, {onClick: loginToSignup})(Form.create()(NormalLoginForm));
+
+const WrappedLoginForm = connect(null, {onClick: loginToSignup, login})(Form.create()(LoginForm));
 
 
 
-
-export default WrappedNormalLoginForm;
+export default WrappedLoginForm;

@@ -1,11 +1,20 @@
 import * as actionTypes from '../constants/actionTypes';
+import api from '../api';
 
-export const onNavBarClick = (clickedTab) => ({
-    type: actionTypes.ON_NAV_BAR_CLICK,
-    selected: clickedTab.key
+export const changeNavSelected = (clickedTab) => ({
+    type: actionTypes.CHANGE_NAV_SELECTED,
+    selected: clickedTab,
+
 })
 
 export const loginToSignup = () => ({
     type: actionTypes.LOG_IN_TO_SIGN_UP,
     selected: 'SignUp'
 })
+export const userLoggedIn = (user) => ({
+    type: actionTypes.USER_LOGGED_IN,
+    user
+})
+
+export const login = credentials => (dispatch) => 
+    api.user.login(credentials).then(user => dispatch(userLoggedIn(user)));

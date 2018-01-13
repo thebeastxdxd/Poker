@@ -1,20 +1,23 @@
 import React from 'react';
 import '../Form.css'
-import { Form, Input, Tooltip, Icon, Button,  } from 'antd';
+import { Form, Input, Tooltip, Icon,   } from 'antd';
 const FormItem = Form.Item;
 
 
 
 class signUpForm extends React.Component {
-  state = {
-    confirmDirty: false,
-  };
+  
+  constructor({errorValues}) {
+    super()
+    
+    this.state = {
+      confirmDirty: false,
+    };
+}
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
+      
     });
   }
   handleConfirmBlur = (e) => {
@@ -25,16 +28,14 @@ class signUpForm extends React.Component {
     const form = this.props.form;
     if (value && value !== form.getFieldValue('password')) {
       callback('Two passwords that you enter is inconsistent!');
-    } 
-
-   
+    }    
     else {
       callback();
     }
   }
   checkConfirm = (rule, value, callback) => {
     const form = this.props.form;
-    if(value.length < 6) {
+    if(value && value.length < 6) {
         callback( 'Password too short, should be atleast 6 characters')
     }
     if (value && this.state.confirmDirty) {
@@ -47,7 +48,6 @@ class signUpForm extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
 
     const formItemLayout = {
         labelCol: {
@@ -59,22 +59,11 @@ class signUpForm extends React.Component {
           sm: { span: 8 },
         },
       };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 4,
-          offset: 0,
-        },
-        sm: {
-          span: 8,
-          offset: 8,
-        },
-      },
-    };
+   
 
 
     return (
-      <Form layout="horizontal" onSubmit={this.handleSubmit}  className="signup-form"  >
+      <Form layout="horizontal" onSubmit={this.handleSubmit}  className="signup-form" id="SignUp"  >
         <FormItem
           {...formItemLayout}
           label="E-mail"
@@ -134,9 +123,7 @@ class signUpForm extends React.Component {
             <Input type="password" onBlur={this.handleConfirmBlur} />
           )}
         </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">Register</Button>
-        </FormItem>
+
       </Form>
     );
   }

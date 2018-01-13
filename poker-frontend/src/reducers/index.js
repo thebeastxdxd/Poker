@@ -5,13 +5,16 @@ const initNavbar = {
     selected:'Home'
 }
 
-const rootReducer = (state = { NavBar:initNavbar}, action) => {
+const rootReducer = (state = { navBar:initNavbar}, action) => {
     switch(action.type)
     {
-        case actionTypes.ON_NAV_BAR_CLICK:
-            return {...state, NavBar:{selected:action.selected}}; 
+        case actionTypes.CHANGE_NAV_SELECTED:
+            console.log(action.selected.split('/'))
+            const newSelected = '/'.concat(action.selected.split('/')[1]);
+            console.log(newSelected)
+            return {...state, navBar:{selected:newSelected}}; 
         case actionTypes.LOG_IN_TO_SIGN_UP:
-            return {...state, NavBar:{selected:action.selected}};
+            return {...state, navBar:{selected:action.selected}};
         default:
             return state;
 
