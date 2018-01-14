@@ -47,5 +47,6 @@
     "babel-plugin-import": "^1.6.3",
     "jest": "^20.0.4",
     "redux-logger": "^3.0.6"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }

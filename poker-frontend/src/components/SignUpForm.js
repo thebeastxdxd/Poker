@@ -1,14 +1,16 @@
 import React from 'react';
 import '../Form.css'
 import { Form, Input, Tooltip, Icon,   } from 'antd';
+import { connect } from 'react-redux';
+import {signup} from '../actions/index';
 const FormItem = Form.Item;
 
 
 
 class signUpForm extends React.Component {
   
-  constructor({errorValues}) {
-    super()
+  constructor(props) {
+    super(props)
     
     this.state = {
       confirmDirty: false,
@@ -17,7 +19,9 @@ class signUpForm extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      
+      if (!err) {
+        this.props.signup(values).then(() => this.props.history.push('/'))
+      }
     });
   }
   handleConfirmBlur = (e) => {
@@ -129,6 +133,6 @@ class signUpForm extends React.Component {
   }
 }
 
-const WrappedSignUpForm = Form.create()(signUpForm);
+const WrappedSignUpForm = connect(null, {signup})(Form.create()(signUpForm));
 
 export default WrappedSignUpForm;

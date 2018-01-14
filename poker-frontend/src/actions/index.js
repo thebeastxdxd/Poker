@@ -4,7 +4,6 @@ import api from '../api';
 export const changeNavSelected = (clickedTab) => ({
     type: actionTypes.CHANGE_NAV_SELECTED,
     selected: clickedTab,
-
 })
 
 export const loginToSignup = () => ({
@@ -18,3 +17,6 @@ export const userLoggedIn = (user) => ({
 
 export const login = credentials => (dispatch) => 
     api.user.login(credentials).then(user => dispatch(userLoggedIn(user)));
+
+export const signup = (data) => (dispatch) => 
+    api.user.signup(data).then(user => dispatch(userLoggedIn(user)));

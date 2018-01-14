@@ -43,7 +43,7 @@ class SignUp extends React.Component {
           {
             this.state.current < steps.length - 1
             &&
-            <Button type="primary"  htmlType="submit" form={steps[this.state.current].title}  onClick={() =>{}}>Next</Button>
+            <Button type="primary"  htmlType="submit" form={steps[this.state.current].title} onClick={() =>{ this.next()} }>Next</Button>
           }
           {
             this.state.current === steps.length - 1
