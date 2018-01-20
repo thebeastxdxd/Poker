@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Menu, Icon } from 'antd';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeNavSelected } from '../actions/index';
 import { NavLink, withRouter } from 'react-router-dom'
@@ -40,11 +40,12 @@ let siteLayout = ({ selectedKey, onClick }) => (
         </Header>
 
         <Content style={{ minHeight:"85vh", marginTop: '70px' }}>
-                <Route path="/SignUp" component={SignUp} />
-                <Route path="/LogIn" component={LogIn} />
+            <Switch>
+                <Route exact path="/SignUp" component={SignUp} />
+                <Route exact path="/LogIn" component={LogIn} />
                 <Route exact path="/Home" component={Home} />
                 <Route exact path="/" component={Home} />
-
+            </Switch>
         </Content>
 
         <Footer style={{ textAlign: 'center'}}>
