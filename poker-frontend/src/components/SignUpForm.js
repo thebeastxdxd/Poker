@@ -26,18 +26,20 @@ class signUpForm extends React.Component {
   componentWillUnmount() {
   this.props.onRef(undefined)
   }
-  addErrors(errors){
-    if(errors && errors.user ){ 
-    assign(this.errors, errors.user)
+  addErrors(user){
+    if(user && user.errors ){ 
+        assign(this.errors, user.errors)
+        this.setState({errors: this.errors})
     }
+    console.log(this.errors)
     return this.errors
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    
+    this.errors = {}
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.props.signup(values).catch(err => this.addErrors(err.response.data.errors)).then((errors)=>this.setState({errors}))
+        this.props.signup(values).catch(err => this.addErrors(err.response.data.user))
       }
     });
     return this.errors

@@ -1,9 +1,10 @@
 import * as actionTypes from "../constants/actionTypes";
-
+import user from './user';
 
 const initNavbar = {
     selected:'Home'
 }
+
 
 const rootReducer = (state = { navBar:initNavbar}, action) => {
     switch(action.type)
@@ -22,7 +23,6 @@ const rootReducer = (state = { navBar:initNavbar}, action) => {
 
 }
 
-const anotherReducer = (state = {}, action) =>{
-    return state;
-}
-export default {rootReducer, anotherReducer};
+
+export default {rootReducer, 
+    user};

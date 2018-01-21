@@ -24,14 +24,14 @@ const configureStore = () => {
     let store = createStore(
         reducer,
         undefined,
-        composeWithDevTools(applyMiddleware(thunk,pokerMiddleware, logger, 
+        composeWithDevTools(applyMiddleware(thunk, pokerMiddleware, logger, 
         routerMiddleware(history)))
     );
     let persistor = persistStore(store);
     // We can hook to webpack's API to replace the root reducer of the store, which will propagate back all the actions.
     if (module.hot) {
         module.hot.accept("../reducers/index", () =>
-            store.replaceReducer(rootReducer.rootReducer)
+            store.replaceReducer(rootReducer)
         )
     }
 

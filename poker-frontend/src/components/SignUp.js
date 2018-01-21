@@ -1,7 +1,7 @@
 import React from 'react';
-import { Steps, Button, message, Alert } from 'antd';
+import { Steps, Button, message } from 'antd';
 import SignUpForm from './SignUpForm';
-import {assign, isEmpty, values} from 'lodash'
+import { isEmpty} from 'lodash'
 import '../Steps.css'
 
 const Step = Steps.Step;
@@ -20,8 +20,6 @@ class SignUp extends React.Component {
     content: 'Upload Avatar Pic',
   }];
 
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -30,13 +28,12 @@ class SignUp extends React.Component {
     };
   }
   onClick = (e) => {
-    
-    Promise.all([
+    Promise.resolve(
       this.SignUpForm.handleSubmit(e)
-    ]).then((errors) => {this.setState({errors}); this.next()})
+    ).then((errors) => {console.log('please', errors);this.setState({errors}); this.next()})
   }
   next() {
-    
+    console.log(isEmpty(this.state.errors))
     if(isEmpty(this.state.errors)){
       const current = this.state.current + 1;
       this.setState({ current });
@@ -47,7 +44,7 @@ class SignUp extends React.Component {
     this.setState({ current });
   }
   render() {
-    const { current, errors } = this.state;
+    const { current } = this.state;
     return (
       <div style={{margin: '5px 10px 0px 10px'}}>
         <Steps current={current}>

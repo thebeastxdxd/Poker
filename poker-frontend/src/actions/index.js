@@ -8,15 +8,30 @@ export const changeNavSelected = (clickedTab) => ({
 
 export const loginToSignup = () => ({
     type: actionTypes.LOG_IN_TO_SIGN_UP,
-    selected: 'SignUp'
+    selected: '/SignUp'
 })
 export const userLoggedIn = (user) => ({
     type: actionTypes.USER_LOGGED_IN,
     user
 })
+export const userLoggedOut = () => ({
+    type: actionTypes.USER_LOGGED_OUT,
+
+})
 
 export const login = credentials => (dispatch) => 
-    api.user.login(credentials).then(user => dispatch(userLoggedIn(user)));
-
+    api.user.login(credentials).then(user => {
+        //localStorage.userToken = user.token;
+        dispatch(userLoggedIn(user))
+    });
+ 
 export const signup = (data) => (dispatch) => 
-    api.user.signup(data).then(user => dispatch(userLoggedIn(user)));
+    api.user.signup(data).then(user => {});
+
+
+
+export const logout = () => (dispatch) => {
+
+    //localStorage.userToken = user.token;
+    dispatch(userLoggedOut())
+};

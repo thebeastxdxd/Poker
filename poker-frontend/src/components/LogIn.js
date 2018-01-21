@@ -1,30 +1,43 @@
 import React from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, Alert  } from 'antd';
 import '../Form.css';
 import {connect} from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter, Redirect } from 'react-router-dom';
 import {login, loginToSignup} from '../actions/index';
-import PropTypes from 'prop-types';
+import {assign, isEmpty} from 'lodash';
 
 const FormItem = Form.Item;
 
 class LoginForm extends React.Component {
     constructor(props) {
         super(props)
+        this.errors = {}
+        this.state = {
+            errors: {},
+            fireRedirect: false
+        }
         this.onClick = props.onClick;
     }
-    
+    addErrors(user){
+        if(user && user.errors ){ 
+            assign(this.errors, user.errors)
+            this.setState({errors: this.errors})
+        }
+        return this.errors
+      }
     handleSubmit = (e) => {
         e.preventDefault();
+        this.errors = {}
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.login(values).then(() => this.props.history.push('/'));
+                this.props.login(values).catch(err => this.addErrors(err.response.data.user)).then(() => {if(isEmpty(this.errors)){console.log('should rerender',this.errors);this.setState({fireRedirect: true})}});    
             }
-        });
+        })
         
     }
     render() {
         const { getFieldDecorator } = this.props.form;
+        let {errors, fireRedirect} = this.state
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
@@ -35,22 +48,12 @@ class LoginForm extends React.Component {
                 sm: { span: 16 },
             },
         };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
-            },
-        };
+        
 
         return (
-
+                <div>
                 <Form onSubmit={this.handleSubmit} className="login-form" layout="horizontal" > 
+                  {errors.global && <Alert {...formItemLayout} style={{width: '66.66666667%'}} message={errors.global} type='error' showIcon  />}
                     <FormItem {...formItemLayout}>
                         {getFieldDecorator('userName', {
                             rules: [{ required: true, message: 'Please input your username!' }],
@@ -78,12 +81,18 @@ class LoginForm extends React.Component {
                         Or <NavLink to="/SignUp" onClick={this.onClick}>Sign Up</NavLink>
                     </FormItem>
                 </Form> 
+                {fireRedirect && (
+                    
+                    <Redirect exact from='/LogIn' to='/Home'/>
+                )}
+                </div>
         );
     }
 }
 
 
-const WrappedLoginForm = connect(null, {onClick: loginToSignup, login})(Form.create()(LoginForm));
+
+const WrappedLoginForm = withRouter(connect(null, {onClick: loginToSignup, login})(Form.create()(LoginForm)));
 
 
 
