@@ -1,12 +1,11 @@
 import React from 'react';
 import '../Form.css'
-import { Form, Input, Tooltip, Icon, Alert   } from 'antd';
+import { Form, Input, Tooltip, Icon, Alert, Spin   } from 'antd';
 import { connect } from 'react-redux';
 import {signup} from '../actions/index';
-import {assign} from 'lodash';
+import {assign, isEmpty, startsWith} from 'lodash';
 
 const FormItem = Form.Item;
-
 
 
 
@@ -17,6 +16,7 @@ class signUpForm extends React.Component {
     this.errors = {}
     this.state = {
       confirmDirty: false,
+      loading: false,
       errors: {}
     };
 }
@@ -26,23 +26,46 @@ class signUpForm extends React.Component {
   componentWillUnmount() {
   this.props.onRef(undefined)
   }
-  addErrors(user){
-    if(user && user.errors ){ 
-        assign(this.errors, user.errors)
+  addErrors(data){
+    console.log(data)
+    if(data.user && data.user.errors ){ 
+        assign(this.errors, data.user.errors)
         this.setState({errors: this.errors})
     }
-    console.log(this.errors)
+    else if(startsWith(data, 'Proxy error: ')){     
+        let global_errors = {'global': '500 Internal Server Error'}
+        assign(this.errors, global_errors)
+        this.setState({errors: this.errors})
+    }
+    else {
+      assign(this.errors, data)
+    }
     return this.errors
   }
-  handleSubmit = (e) => {
+   handleSubmit(e) {
     e.preventDefault();
     this.errors = {}
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    this.setState({loading: true})
+    
+      this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.props.signup(values).catch(err => this.addErrors(err.response.data.user))
+           console.log('no client side errors.')
       }
+      else{
+        this.setState({loading:false})
+        this.addErrors(err)
+      }
+      
     });
-    return this.errors
+    
+    if(isEmpty(this.errors)){
+      return new Promise(resolve => resolve(this.props.signup(this.props.form.getFieldsValue()).catch(err => this.addErrors(err.response.data)).then(
+        () => {this.setState({loading:false});return this.errors})))
+    }
+    else{
+      return new Promise(resolve => resolve(this.errors))
+    }
+
   }
   handleConfirmBlur = (e) => {
     const value = e.target.value;
@@ -68,7 +91,6 @@ class signUpForm extends React.Component {
     callback();
   }
 
-  
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -87,7 +109,9 @@ class signUpForm extends React.Component {
       };
 
     return (
-      <Form layout="horizontal" onSubmit={this.handleSubmit}  className="signup-form" id="SignUp"  >
+      <Spin spinning={this.state.loading}  >
+      <Form layout="horizontal" onSubmit={this.handleSubmit}  className="signup-form" id="SignUp" >
+      {errors.global && <Alert {...formItemLayout} style={{width: '33.33333%', marginLeft: '33.33333%'}} message={errors.global} type='error' showIcon  />}
         <FormItem
           {...formItemLayout}
           label="E-mail"
@@ -155,6 +179,7 @@ class signUpForm extends React.Component {
         </FormItem>
         
       </Form>
+      </Spin>
     );
   }
 }

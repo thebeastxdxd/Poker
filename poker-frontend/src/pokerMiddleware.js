@@ -1,12 +1,9 @@
-import { changeNavSelected} from "./actions/index";
+import { changeNavSelected, logout, getUserInfo} from "./actions/index";
 import {assign, set} from 'lodash';
 import * as actionTypes from "./constants/actionTypes";
 
 export const pokerMiddleware = store => next => action => {
     let state = store.getState();
-    console.log(store.getState())
-
-
     switch (action.type) {
         case 'persist/REHYDRATE':
             let newAction = assign({}, action);
@@ -18,6 +15,17 @@ export const pokerMiddleware = store => next => action => {
             return next(action);
         case actionTypes.USER_LOGGED_OUT:
             store.dispatch(changeNavSelected("/Home"))
+            return next(action);
+        case actionTypes.CHANGE_NAV_SELECTED:
+            if (action.selected === '/Logout' ) {
+                let newAction = {...action, selected:'/Home'}
+                store.dispatch(logout())
+                return next(newAction)
+            }
+            if(action.selected === '/Profile'){
+                let userName = state.user.userName ? state.user.userName : ''
+                store.dispatch(getUserInfo(userName))
+            }
             return next(action);
         default:
             return next(action);

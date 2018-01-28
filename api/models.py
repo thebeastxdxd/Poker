@@ -1,5 +1,6 @@
-from app import db
+from manage import db
 import datetime
+from utils import dump_datetime
 
 class User(db.Model):
     username = db.Column(db.String(50), primary_key=True)
@@ -19,9 +20,28 @@ class Stats(db.Model):
     streak = db.Column(db.Integer, default=0)
     cash = db.Column(db.Integer, default= 10000)
 
+    @property
+    def serialize(self):
+       """Return object data in easily serializeable format"""
+       return {
+           'games': self.games,
+           'last_login': dump_datetime(self.last_login),
+           'wins' : self.wins,
+           'streak' : self.streak,
+           'cash' : self.cash
+       }
+
 '''
 class friends(db.Model):
     pass
+    'many2many'  : self.serialize_many2many
+    @property
+    def serialize_many2many(self):
+       """
+       Return object's relations in easily serializeable format.
+       NB! Calls many2many's serialize property.
+       """
+       return [ item.serialize for item in self.many2many]
 
 class payment(db.Model):
     pass

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Icon, Input, Button, Checkbox, Alert  } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, Alert, Spin  } from 'antd';
 import '../Form.css';
 import {connect} from 'react-redux';
 import { NavLink, withRouter, Redirect } from 'react-router-dom';
@@ -14,13 +14,21 @@ class LoginForm extends React.Component {
         this.errors = {}
         this.state = {
             errors: {},
+            loading: false,
             fireRedirect: false
         }
         this.onClick = props.onClick;
     }
-    addErrors(user){
-        if(user && user.errors ){ 
-            assign(this.errors, user.errors)
+    addErrors(data){
+
+        if(data.user && data.user.errors ){ 
+            assign(this.errors, data.user.errors)
+            this.setState({errors: this.errors})
+        }
+        else  if(data==='Proxy error: Could not proxy request /api/auth from localhost:3000 to http://localhost:5000/ (ECONNREFUSED).'){
+            console.log(data)
+            let global_errors = {'global': '500 Internal Server Error'}
+            assign(this.errors, global_errors)
             this.setState({errors: this.errors})
         }
         return this.errors
@@ -28,11 +36,14 @@ class LoginForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.errors = {}
+        this.setState({loading: true})
         this.props.form.validateFields((err, values) => {
+
             if (!err) {
-                this.props.login(values).catch(err => this.addErrors(err.response.data.user)).then(() => {if(isEmpty(this.errors)){console.log('should rerender',this.errors);this.setState({fireRedirect: true})}});    
+                this.props.login(values).catch(err => this.addErrors(err.response.data)).then(() => {this.setState({loading:false});if(isEmpty(this.errors)){;this.setState({fireRedirect: true})}});    
             }
         })
+        
         
     }
     render() {
@@ -52,6 +63,7 @@ class LoginForm extends React.Component {
 
         return (
                 <div>
+                <Spin spinning={this.state.loading}  >
                 <Form onSubmit={this.handleSubmit} className="login-form" layout="horizontal" > 
                   {errors.global && <Alert {...formItemLayout} style={{width: '66.66666667%'}} message={errors.global} type='error' showIcon  />}
                     <FormItem {...formItemLayout}>
@@ -85,6 +97,7 @@ class LoginForm extends React.Component {
                     
                     <Redirect exact from='/LogIn' to='/Home'/>
                 )}
+                </Spin>
                 </div>
         );
     }

@@ -1,0 +1,5 @@
+.avatar-uploader > .ant-upload {
+    width: 12%;
+    height: 128px;
+    margin: 3%
+  }

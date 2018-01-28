@@ -1,7 +1,7 @@
 import React from 'react';
 import {  Menu, Icon } from 'antd';
 import { NavLink } from 'react-router-dom'
-const UserMenu = ({selectedKey, onClick, logout}) => {
+const UserMenu = ({selectedKey, onClick}) => {
     return ( 
         <Menu
                 onClick={(e) => onClick(e.key)}
@@ -14,10 +14,15 @@ const UserMenu = ({selectedKey, onClick, logout}) => {
                 <Icon type="home" /> Home
                 <NavLink to="/Home" />
                 </Menu.Item>
-                
+
+                <Menu.Item key="/Profile" >
+                <Icon type="user" /> Profile
+                <NavLink to="/Profile" />
+                </Menu.Item>
+
                 <Menu.Item key="/Logout"  >
                 <Icon type="logout" />
-                    <span onClick={() => logout()}>Logout</span>
+                    Logout
                 </Menu.Item>        
             </Menu>
     );
