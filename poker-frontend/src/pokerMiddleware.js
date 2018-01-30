@@ -18,8 +18,8 @@ export const pokerMiddleware = store => next => action => {
             return next(action);
         case actionTypes.CHANGE_NAV_SELECTED:
             if (action.selected === '/Logout' ) {
-                let newAction = {...action, selected:'/Home'}
                 store.dispatch(logout())
+                let newAction = {...action, selected:'/Home'}
                 return next(newAction)
             }
             if(action.selected === '/Profile'){

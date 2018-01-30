@@ -23,6 +23,7 @@ const UserMenu = ({selectedKey, onClick}) => {
                 <Menu.Item key="/Logout"  >
                 <Icon type="logout" />
                     Logout
+                <NavLink to="/Home" />
                 </Menu.Item>        
             </Menu>
     );

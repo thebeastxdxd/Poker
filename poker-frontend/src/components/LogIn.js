@@ -19,6 +19,11 @@ class LoginForm extends React.Component {
         }
         this.onClick = props.onClick;
     }
+    componentWillUnmount(){
+        if(isEmpty(this.errors))
+        {this.setState({fireRedirect: true,
+        loading: false})}
+    }
     addErrors(data){
 
         if(data.user && data.user.errors ){ 
@@ -38,9 +43,9 @@ class LoginForm extends React.Component {
         this.errors = {}
         this.setState({loading: true})
         this.props.form.validateFields((err, values) => {
-
             if (!err) {
-                this.props.login(values).catch(err => this.addErrors(err.response.data)).then(() => {this.setState({loading:false});if(isEmpty(this.errors)){;this.setState({fireRedirect: true})}});    
+                this.props.login(values).catch(err => this.addErrors(err.response.data)).then(()=> {if(!isEmpty(this.errors)){console.log('fuck');this.setState({loading: false})}})
+
             }
         })
         
@@ -62,7 +67,7 @@ class LoginForm extends React.Component {
         
 
         return (
-                <div>
+
                 <Spin spinning={this.state.loading}  >
                 <Form onSubmit={this.handleSubmit} className="login-form" layout="horizontal" > 
                   {errors.global && <Alert {...formItemLayout} style={{width: '66.66666667%'}} message={errors.global} type='error' showIcon  />}
@@ -98,7 +103,7 @@ class LoginForm extends React.Component {
                     <Redirect exact from='/LogIn' to='/Home'/>
                 )}
                 </Spin>
-                </div>
+
         );
     }
 }

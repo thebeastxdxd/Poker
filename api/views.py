@@ -7,7 +7,7 @@ import datetime
 from schemas import *
 from functools import wraps
 import base64
-from mimetypes import guess_extension
+from utils import path_to_base64_avatar, username_to_base64_avatar, resize_image
  
 def validate_schema(schema):
 
@@ -87,18 +87,23 @@ def add_user_avatar():
     if not data['user']:
         return jsonify({'user': {'errors': {'global': 'incorrect format'}}}), 400
     data = data['user']
-    if not User.query.filter_by(username=data['userName']).first():
+    
+    user = User.query.filter_by(username=data['userName']).first()
+    if not user:
         return  jsonify({'user': {'errors': {'global': 'Username doesn\'t exist'}}}), 400
     if not data['imageUrl']:
          return  jsonify({'user': {'errors': {'global': 'incorrect image'}}}), 400
 
-    imgdata = base64.b64decode(data['imageUrl'])
-    filename = 'avatars/{0}_avatar.{1}}'.format(data['userName'], guess_extension(imgdata)) 
-    
+    imgdata = data['imageUrl'].split(',')[1]
+    imgdata = base64.decodebytes(imgdata.encode())
+    filename = 'avatars/{0}_avatar.jpg'.format(data['userName']) 
+    user.avatar = filename
+
     with open(filename, 'wb') as f:
         f.write(imgdata)
-    
-    return {'user': {'imageUrl': filename, 'image': imgdata}}
+    resize_image(filename)
+    user_image = username_to_base64_avatar(data['userName'])
+    return jsonify({'user': { 'avatar': data['imageUrl']}})
 
     
 @app.route('/api/profile/<userName>', methods=['GET'])
@@ -112,4 +117,9 @@ def get_user_info(userName):
     user_stats = user.stats.serialize
     user_type = user.player_type
 
-    return jsonify({'user': {'player_type': user_type, 'stats': user_stats}})
+    if not user.avatar:
+        user_image = username_to_base64_avatar(userName)
+    else:
+        user_image = path_to_base64_avatar(user.avatar)
+    print(user_image)
+    return jsonify({'user': {'player_type': user_type, 'avatar': user_image.decode('ascii'), 'stats': user_stats}})

@@ -5,8 +5,9 @@ import { uploadAvatar} from '../actions/index';
 import {assign, isEmpty} from 'lodash';
 import '../Avatar.css'
 
-function getBase64(img) {
+function getBase64(img, callback) {
   const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
   reader.readAsDataURL(img);
   return reader
 }
@@ -29,7 +30,8 @@ class Avatar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          loading: false
+          loading: false,
+          uploaded:false
         };
     }
   handleChange = (info) => {
@@ -43,19 +45,22 @@ class Avatar extends React.Component {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
+      console.log()
       getBase64(info.file.originFileObj, imageUrl => this.setState({
         imageUrl,
         loading: false,
+        uploaded:true
       }));
     }
   }
 
   onUpload =({file, onSuccess}) => {
-        const reader = getBase64(file)
+        const reader = getBase64(file, () => (img) => message.warning('image will be resized'))
         reader.onload = (...args) => {
-            let filecontents = {'image':reader.result }
-            let requestUser = !isEmpty(this.props.user) ? this.props.user : {'user' :{'userName' : 'a'}}
-            let requestData = {...requestUser.user, filecontents}
+            let imageUrl = reader.result 
+            let requestUser = !isEmpty(this.props.user) ? this.props.user : {'userName' : ''}
+            console.log(this.props.user)
+            let requestData = {...requestUser, imageUrl}
 
             this.props.uploadAvatar(requestData)
 

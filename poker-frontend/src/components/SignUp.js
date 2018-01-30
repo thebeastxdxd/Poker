@@ -33,6 +33,7 @@ class SignUp extends React.Component {
   } 
   componentWillMount() {
     let user = this.props.user
+    console.log(user)
     let current = 0
     if(!!user) {
       return;
