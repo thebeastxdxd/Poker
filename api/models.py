@@ -2,7 +2,14 @@ from manage import db
 import datetime
 from utils import dump_datetime
 
+
+followers = db.Table('followers',
+    db.Column('follower_username', db.String(50), db.ForeignKey('user.username')),
+    db.Column('followed_username', db.String(50), db.ForeignKey('user.username'))
+)
+
 class User(db.Model):
+    __tablename__ = 'user'
     username = db.Column(db.String(50), primary_key=True)
     password = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), nullable=False)
@@ -10,7 +17,26 @@ class User(db.Model):
     avatar = db.Column(db.Text, default='')
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow())
     stats = db.relationship('Stats', backref=db.backref('user'), uselist=False)
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_username == username),
+        secondaryjoin=(followers.c.followed_username == username),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        return self.followed.filter(
+            followers.c.followed_username == user.username).count() > 0
+
+    def followed_an_followers(self):
+        return list(map(lambda u: u.username, self.followed.all())), list(map(lambda u: u.username, self.followers.all()))
 
 class Stats(db.Model):
     username = db.Column(db.String(50), db.ForeignKey('user.username'), primary_key=True )
@@ -32,17 +58,6 @@ class Stats(db.Model):
        }
 
 '''
-class friends(db.Model):
-    pass
-    'many2many'  : self.serialize_many2many
-    @property
-    def serialize_many2many(self):
-       """
-       Return object's relations in easily serializeable format.
-       NB! Calls many2many's serialize property.
-       """
-       return [ item.serialize for item in self.many2many]
-
 class payment(db.Model):
     pass
 

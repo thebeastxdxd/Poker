@@ -1,6 +1,8 @@
 import React from 'react';
-import {  Menu, Icon } from 'antd';
+import {  Menu, Icon, Input } from 'antd';
 import { NavLink } from 'react-router-dom'
+const Search = Input.Search;
+
 const UserMenu = ({selectedKey, onClick}) => {
     return ( 
         <Menu
@@ -20,11 +22,19 @@ const UserMenu = ({selectedKey, onClick}) => {
                 <NavLink to="/Profile" />
                 </Menu.Item>
 
-                <Menu.Item key="/Logout"  >
+                <Menu.Item key="/Logout">
                 <Icon type="logout" />
                     Logout
                 <NavLink to="/Home" />
-                </Menu.Item>        
+                </Menu.Item> 
+
+                <Menu.Item key="/Search" style={{float: 'right'}}>
+                <Search
+                placeholder="search user"
+                onSearch={value => console.log(value)}
+                enterButton
+                />
+                </Menu.Item>
             </Menu>
     );
 }

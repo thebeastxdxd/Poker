@@ -76,7 +76,8 @@ def create_user():
 
     db.session.add(new_user)
     db.session.commit()
-    
+    new_user.follow(new_user)
+    db.session.commit()
     
     return jsonify({'user' : {'userName': new_user.username}}), 200
 
@@ -116,10 +117,10 @@ def get_user_info(userName):
 
     user_stats = user.stats.serialize
     user_type = user.player_type
-
+    user_followed, user_followers = user.followed_an_followers()
     if not user.avatar:
         user_image = username_to_base64_avatar(userName)
     else:
         user_image = path_to_base64_avatar(user.avatar)
-    print(user_image)
-    return jsonify({'user': {'player_type': user_type, 'avatar': user_image.decode('ascii'), 'stats': user_stats}})
+    print(user_followed, user_followers)
+    return jsonify({'user': {'player_type': user_type, 'avatar': user_image.decode('ascii'), 'stats': user_stats, 'followed': user_followed, 'followers': user_followers}})

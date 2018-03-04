@@ -3,6 +3,7 @@ import { Card, Icon, Avatar, Spin } from 'antd';
 import {connect} from 'react-redux';
 import {  withRouter, Redirect } from 'react-router-dom';
 import UserInfo from './UserInfo'
+
 const { Meta } = Card;
 
 
@@ -14,11 +15,11 @@ class Profile extends React.Component {
     
     render() {
         const {user, loading} = this.props
-        console.log(user)
         return (
                 <Spin spinning={loading} >
                     <div style={{ background: '#ECECEC', padding: '30px', minHeight:"85vh"}}>
-                        <UserInfo avatarSrc={user.avatar} username={user.userName} type={user.player_type} games={user.stats.games} wins={user.stats.wins} />
+                        <UserInfo avatarSrc={user.avatar} username={user.userName} type={user.player_type} games={user.stats ? user.stats.games : 0} 
+                        wins={user.stats ? user.stats.wins: 0} followed={user.followed} followers={user.followers} />             
                     </div>
                 </Spin>
         );
